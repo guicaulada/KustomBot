@@ -6,6 +6,8 @@ Use https://twitchapps.com/tmi to get your authentication token.
 
 I am releasing this project to the public hoping that it will be helpful for beginners trying to learn Javascript.  
 
+PS: Don't mind the commit messages, I'm just having some fun. :)
+
 ## License
 ```
 KustomBot - A customizable bot for Twitch.
