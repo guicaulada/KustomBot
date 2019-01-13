@@ -4,7 +4,7 @@ A customizable bot for Twitch.
 This is just a simple project I made for a friend.  
 Use https://twitchapps.com/tmi to get your authentication token.  
 
-I am releasing this project to the public hoping that it will be helpful for beginners trying to learn Javascript.  
+I am releasing this project to the public hoping that it will be helpful for beginners trying to learn JavaScript.  
 
 PS: Don't mind the commit messages, I'm just having some fun. :)
 
