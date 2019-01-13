@@ -15,4 +15,23 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-module.exports = require("./KustomBot");
+
+const fs = require('fs');
+const KustomBot = require('kustombot')
+
+let conf = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+
+global.bot = new KustomBot(conf)
+
+require('./commands')
+
+
+bot.addMessageHandler((channel, data, msg, self) => {
+  console.log(channel, data, msg, self)
+})
+
+bot.addConnectionHandler((addr, port) => {
+  console.log(`Connected to ${addr}:${port}`);
+})
+
+bot.connect()

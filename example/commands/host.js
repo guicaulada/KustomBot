@@ -17,15 +17,27 @@
 */
 
 let mainChannel = `#${bot.account}`
-let raffleInterval = 1000*60*15 // 1000ms * 60s * 15m = 15 minutes
+let raffleInterval = 1000 * 60 * 15 // 1000ms * 60s * 15m = 15 minutes
 let raffleAnnounce = true
 let hostCooldown = ''
 let hostTickets = {}
 let maxTicket = 100
+let streamMe = true
 
-let hostRaffle = async () => {
+let hostAnnounce = async () => {
+  if (raffleAnnounce) {
+    setTimeout(() => {
+      bot.say(mainChannel, `The next host raffle happens in 5 minutes, type !hostme to join!`)
+    }, raffleInterval - 1000 * 60 * 5)
+    setTimeout(() => {
+      bot.say(mainChannel, `The next host raffle happens in 10 minutes, type !hostme to join!`)
+    }, raffleInterval - 1000 * 60 * 10)
+  }
+}
+
+let hostWinner = async () => {
   let num = Math.floor(Math.random() * Math.floor(maxTicket))
-  let winner = {dist: maxTicket}
+  let winner = { dist: maxTicket }
   for (let host in hostTickets) {
     if (num - hostTickets[host] < winner.dist) {
       winner.username = host
@@ -44,13 +56,19 @@ let hostRaffle = async () => {
     }
     hostCooldown = winner.username
   }
-  if (raffleAnnounce) {
-    setTimeout(() => {
-      bot.say(mainChannel, `The next host raffle happens in 5 minutes, type !hostme to join!`)
-    }, raffleInterval-1000*60*5)
-    setTimeout(() => {
-      bot.say(mainChannel, `The next host raffle happens in 10 minutes, type !hostme to join!`)
-    }, raffleInterval-1000*60*10)
+}
+
+let hostRaffle = async () => {
+  if (streamMe && hostCooldown) {
+    hostCooldown = false
+    bot.say(mainChannel, `${bot.account} is going back on stream!`)
+    bot.say(mainChannel, `/unhost`)
+    hostAnnounce()
+  } else if (streamMe) {
+    hostWinner()
+  } else {
+    hostWinner()
+    hostAnnounce()
   }
   setTimeout(hostRaffle, raffleInterval)
 }
@@ -58,21 +76,21 @@ hostRaffle()
 
 bot.addCommandHandler('hostme', (channel, data, args) => {
   if (channel == mainChannel) {
-    if (data.username != hostCooldown) {
+    if (args[1] != hostCooldown) {
       let num = Number(args[0])
       if (Number.isNaN(num)) num = Math.floor(Math.random() * Math.floor(maxTicket))
-      if (hostTickets[data.username] == null) {
+      if (hostTickets[args[1]] == null) {
         if (num <= maxTicket && num >= 0) {
-          hostTickets[data.username] = num
-          bot.say(channel, `${data.username} joined the raffle with number ${num}!`)
+          hostTickets[args[1]] = num
+          bot.say(channel, `${args[1]} joined the raffle with number ${num}!`)
         } else {
-          bot.say(channel, `${data.username} your ticket number must be between 0 and ${maxTicket}!`)
+          bot.say(channel, `${args[1]} your ticket number must be between 0 and ${maxTicket}!`)
         }
       } else {
-        bot.say(channel, `${data.username} you already have a ticket for this raffle!`)
+        bot.say(channel, `${args[1]} you already have a ticket for this raffle!`)
       }
     } else {
-      bot.say(channel, `${data.username} you're already being hosted!`)
+      bot.say(channel, `${args[1]} you're already being hosted!`)
     }
   }
 })

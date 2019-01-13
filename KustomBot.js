@@ -24,7 +24,7 @@ const tmi = require('tmi.js');
 
 class KustomBot {
   constructor(conf) {
-    this.account = process.env.KUSTOM_ACCOUNT || conf.account,
+    this.account = process.env.KUSTOM_ACCOUNT || conf.account
     this.token = process.env.KUSTOM_TOKEN || conf.token
     this.channels = conf.channels
     this.prefix = conf.prefix
