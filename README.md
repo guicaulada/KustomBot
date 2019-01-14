@@ -8,6 +8,10 @@ I am releasing this project to the public hoping that it will be helpful for beg
 
 PS: Don't mind the commit messages, I'm just having some fun. :)
 
+## Installation
+
+Use `npm install kustombot`
+
 ## License
 ```
 KustomBot - A customizable bot for Twitch.
