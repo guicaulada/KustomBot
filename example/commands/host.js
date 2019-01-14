@@ -76,21 +76,21 @@ hostRaffle()
 
 bot.addCommandHandler('hostme', (channel, data, args) => {
   if (channel == mainChannel) {
-    if (args[1] != hostCooldown) {
+    if (data.username != hostCooldown) {
       let num = Number(args[0])
       if (Number.isNaN(num)) num = Math.floor(Math.random() * Math.floor(maxTicket))
-      if (hostTickets[args[1]] == null) {
+      if (hostTickets[data.username] == null) {
         if (num <= maxTicket && num >= 0) {
-          hostTickets[args[1]] = num
-          bot.say(channel, `${args[1]} joined the raffle with number ${num}!`)
+          hostTickets[data.username] = num
+          bot.say(channel, `${data.username} joined the raffle with number ${num}!`)
         } else {
-          bot.say(channel, `${args[1]} your ticket number must be between 0 and ${maxTicket}!`)
+          bot.say(channel, `${data.username} your ticket number must be between 0 and ${maxTicket}!`)
         }
       } else {
-        bot.say(channel, `${args[1]} you already have a ticket for this raffle!`)
+        bot.say(channel, `${data.username} you already have a ticket for this raffle!`)
       }
     } else {
-      bot.say(channel, `${args[1]} you're already being hosted!`)
+      bot.say(channel, `${data.username} you're already being hosted!`)
     }
   }
 })
