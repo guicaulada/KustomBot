@@ -16,13 +16,16 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Config for host raffle
+let raffleInterval = 1000 * 60 * 15 // Raffle interval 1000ms * 60s * 15m = 15 minutes
+let raffleAnnounce = true           // If announcements on chat should be on
+let maxTicket = 100                 // Max number a ticket can have
+let streamMe = true                 // If you want to stream yourself in between raffles
+// End of config
+
 let mainChannel = `#${bot.account}`
-let raffleInterval = 1000 * 60 * 15 // 1000ms * 60s * 15m = 15 minutes
-let raffleAnnounce = true
-let hostCooldown = ''
+let hostCooldown = false
 let hostTickets = {}
-let maxTicket = 100
-let streamMe = true
 
 let hostAnnounce = async () => {
   if (raffleAnnounce) {
@@ -47,7 +50,7 @@ let hostWinner = async () => {
     }
   }
   if (winner.username) {
-    let stream = await helix.getStreams({ user_login: data.username })
+    let stream = await helix.getStreams({ user_login: winner.username })
     if (stream.data.length) {
       hostTickets = {}
       bot.say(mainChannel, `The number is ${num}! ${winner.username} is the winner of the raffle!`)
@@ -67,13 +70,16 @@ let hostWinner = async () => {
 }
 
 let hostRaffle = async () => {
-  if (streamMe && hostCooldown) {
-    hostCooldown = false
-    bot.say(mainChannel, `${bot.account} is going back on stream!`)
-    bot.say(mainChannel, `/unhost`)
-    hostAnnounce()
-  } else if (streamMe) {
-    hostWinner()
+  let stream = await helix.getStreams({ user_login: bot.account })
+  if (streamMe && stream.data.length > 0) {
+    if (hostCooldown) {
+      hostCooldown = false
+      bot.say(mainChannel, `${bot.account} is going back on stream!`)
+      bot.say(mainChannel, `/unhost`)
+      hostAnnounce()
+    } else {
+      hostWinner()
+    }
   } else {
     hostWinner()
     hostAnnounce()
