@@ -18,17 +18,18 @@
 
 const fs = require('fs');
 const KustomBot = require('kustombot')
+const Helix = require('@sighmir/helix.js')
 
 let conf = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 global.bot = new KustomBot(conf)
+global.helix = new Helix(bot.token)
 
 require('./commands')
 
-
-bot.addMessageHandler((channel, data, msg, self) => {
-  console.log(channel, data, msg, self)
-})
+// bot.addMessageHandler((channel, data, msg, self) => {
+//   console.log(channel, data, msg, self)
+// })
 
 bot.addConnectionHandler((addr, port) => {
   console.log(`Connected to ${addr}:${port}`);

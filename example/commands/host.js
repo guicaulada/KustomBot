@@ -47,14 +47,22 @@ let hostWinner = async () => {
     }
   }
   if (winner.username) {
-    hostTickets = {}
-    bot.say(mainChannel, `The number is ${num}! ${winner.username} is the winner of the raffle!`)
-    if (winner.username == bot.account) {
-      bot.say(mainChannel, `/unhost`)
+    let stream = await helix.getStreams({ user_login: data.username })
+    if (stream.data.length) {
+      hostTickets = {}
+      bot.say(mainChannel, `The number is ${num}! ${winner.username} is the winner of the raffle!`)
+      if (winner.username == bot.account) {
+        bot.say(mainChannel, `/unhost`)
+      } else {
+        bot.say(mainChannel, `/host ${winner.username}`)
+      }
+      hostCooldown = winner.username
     } else {
-      bot.say(mainChannel, `/host ${winner.username}`)
+      delete hostTickets[winner.username]
+      bot.say(mainChannel, `The number is ${num}! ${winner.username} is the winner of the raffle, but his stream is offline!`)
+      bot.say(mainChannel, `We will pick another winner!`)
+      hostWinner()
     }
-    hostCooldown = winner.username
   }
 }
 
@@ -74,20 +82,25 @@ let hostRaffle = async () => {
 }
 hostRaffle()
 
-bot.addCommandHandler('hostme', (channel, data, args) => {
+bot.addCommandHandler('hostme', async (channel, data, args) => {
   if (channel == mainChannel) {
     if (data.username != hostCooldown) {
-      let num = Number(args[0])
-      if (Number.isNaN(num)) num = Math.floor(Math.random() * Math.floor(maxTicket))
-      if (hostTickets[data.username] == null) {
-        if (num <= maxTicket && num >= 0) {
-          hostTickets[data.username] = num
-          bot.say(channel, `${data.username} joined the raffle with number ${num}!`)
+      let stream = await helix.getStreams({user_login: data.username})
+      if (stream.data.length > 0) {
+        let num = Number(args[0])
+        if (Number.isNaN(num)) num = Math.floor(Math.random() * Math.floor(maxTicket))
+        if (hostTickets[data.username] == null) {
+          if (num <= maxTicket && num >= 0) {
+            hostTickets[data.username] = num
+            bot.say(channel, `${data.username} joined the raffle with number ${num}!`)
+          } else {
+            bot.say(channel, `${data.username} your ticket number must be between 0 and ${maxTicket}!`)
+          }
         } else {
-          bot.say(channel, `${data.username} your ticket number must be between 0 and ${maxTicket}!`)
+          bot.say(channel, `${data.username} you already have a ticket for this raffle!`)
         }
       } else {
-        bot.say(channel, `${data.username} you already have a ticket for this raffle!`)
+        bot.say(channel, `${data.username} your stream must be live to join the raffle!`)
       }
     } else {
       bot.say(channel, `${data.username} you're already being hosted!`)
