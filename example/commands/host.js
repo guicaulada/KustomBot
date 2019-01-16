@@ -27,7 +27,7 @@ let mainChannel = `#${bot.account}`
 let hostCooldown = false
 let hostTickets = {}
 
-function ordinalSuffix(i) {
+let ordinalSuffix = (i) => {
   let j = i % 10,
     k = i % 100;
   if (j == 1 && k != 11) {
