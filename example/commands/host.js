@@ -27,6 +27,21 @@ let mainChannel = `#${bot.account}`
 let hostCooldown = false
 let hostTickets = {}
 
+function ordinalSuffix(i) {
+  let j = i % 10,
+    k = i % 100;
+  if (j == 1 && k != 11) {
+    return i + "st";
+  }
+  if (j == 2 && k != 12) {
+    return i + "nd";
+  }
+  if (j == 3 && k != 13) {
+    return i + "rd";
+  }
+  return i + "th";
+}
+
 let hostAnnounce = async () => {
   if (raffleAnnounce) {
     setTimeout(() => {
@@ -98,7 +113,7 @@ bot.addCommandHandler('hostme', async (channel, data, args) => {
         if (hostTickets[data.username] == null) {
           if (num <= maxTicket && num >= 0) {
             hostTickets[data.username] = num
-            bot.say(channel, `${data.username} joined the raffle with number ${num}!`)
+            bot.say(channel, `${data.username} is the ${ordinalSuffix(Object.keys(hostTickets).length)} to join the raffle with number ${num}!`)
           } else {
             bot.say(channel, `${data.username} your ticket number must be between 0 and ${maxTicket}!`)
           }
