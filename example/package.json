@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@sighmir/helix.js": "^1.0.1",
+    "@sighmir/helix.js": "^1.0.2",
     "kustombot": "^1.0.2"
   },
   "devDependencies": {},
