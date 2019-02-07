@@ -44,6 +44,5 @@ let spam = () => {
       bot.say(channel, messages[random])
     }
   }
-  setInterval(spam, interval)
 }
 setInterval(spam, interval)

@@ -96,7 +96,6 @@ let hostWinner = async () => {
         bot.say(mainChannel, `/w ${winner.username} Congratulations you won the raffle! Don't forget to type !hostme to join the next one in 15 minutes!`)
       }
       hostCooldown = winner.username
-      lastRaffle = Date.now()
       setTimeout(() => bot.say(mainChannel, `The next raffle will happen in ${timeForRaffle()} minute(s), type !hostme to join!`), 1000)
     } else {
       hostTickets = hostTickets.filter((ticket) => ticket.host != winner.username)
@@ -122,6 +121,7 @@ let hostRaffle = async () => {
     hostWinner()
     hostAnnounce()
   }
+  lastRaffle = Date.now()
   setTimeout(hostRaffle, raffleInterval)
 }
 hostRaffle()
