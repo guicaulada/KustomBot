@@ -114,7 +114,11 @@ class KustomBot {
   }
 
   say(channel, message) {
-    this.client.say(channel, message)
+    try {
+      this.client.say(channel, message)
+    } catch {
+      console.log('Failed to send message, not connected to server.')
+    }
   }
 }
 
