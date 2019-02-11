@@ -37,12 +37,19 @@ let messages = [
 
 // End of config
 
-let spam = () => {
+function delay(milleseconds) {
+  return new Promise(resolve => setTimeout(resolve, milleseconds))
+}
+
+let spam = async () => {
   if (messages.length && channels.length) {
     for (let channel of channels) {
       let random = Math.floor(Math.random()*messages.length)
       bot.say(channel, messages[random])
+      await delay(2000)
     }
+    setTimeout(spam, interval)
   }
 }
-setInterval(spam, interval)
+
+setTimeout(spam, interval)
