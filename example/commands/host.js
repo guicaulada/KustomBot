@@ -25,15 +25,30 @@ let streamMe = true                 // If you want to stream yourself in between
 
 // Max tickets config
 let defaultMaxTickets = 1           // Max tickets a normal user can buy
-let bitsMaxTickets = 2              // Max tickets an user from the bits leaderboard can buy
 let followMaxTickets = 3            // Max tickets a follower can buy
 let subsMaxTickets = 5              // Max tickets a subscriber can buy
+
+/*
+ Bits rank tickets config - Max length = maxBitsRank
+ The values in this config will be divided between the leaderboard
+
+ If you set 10 values for a leaderboard with max rank 10, then
+ each position will get a different amount of tickets, if you set
+ 3 values for a max rank of 10 those values will be distributed like so
+ first value: [1,2,3], second value: [4,5,6], third value: [7,8,9,10]
+
+ The same applies for any other combination of maxBitsRank and bitsTankTickets values.
+*/
+let bitsRankTickets = [
+  5,
+  3,
+  2
+]
 
 //Bits leaderboard
 let maxBitsRank = 10                // Max rank accepted on the leaderboard - Maximum: 100
 
 // End of config
-
 let mainChannel = `#${bot.account}`
 let lastRaffle = Date.now()
 let hostCooldown = false
@@ -141,6 +156,20 @@ let getAllFollows = async () => {
   return allFollows
 }
 
+let getBitTicketsByRank = (rank) => {
+  let rankTickets = bitsRankTickets.slice(0, maxBitsRank)
+  let rankChunk = Math.floor(maxBitsRank / rankTickets.length)
+  let rankIndex = Array.from((new Array(maxBitsRank)).keys())
+  let bitsIndex = -1
+  for (let i = 0; bitsIndex < rankTickets.length-1; i += rankChunk) {
+    bitsIndex++
+    if (rankIndex.slice(i, i + rankChunk).includes(rank)) {
+      break
+    }
+  }
+  return bitsRankTickets[bitsIndex]
+}
+
 let ticketsAmount = async (host) => {
   let followsAmount = async () => {
     if ((await getAllFollows()).map((follow) => follow.from_name.toLowerCase()).includes(host))
@@ -149,8 +178,9 @@ let ticketsAmount = async (host) => {
       return 0
   }
   let bitsAmount = async () => {
-    if ((await helix.getBitsLeaderboard({ count: maxBitsRank })).data.map((host) => host.user_name).includes(host))
-      return bitsMaxTickets - hostTickets.filter((ticket) => ticket.host == host).length
+    let rank = (await helix.getBitsLeaderboard({ count: maxBitsRank })).data.map((host) => host.user_name).indexOf(host)
+    if (rank >= 0)
+      return getBitTicketsByRank(rank) - hostTickets.filter((ticket) => ticket.host == host).length
     else
       return 0
   }
@@ -192,6 +222,32 @@ bot.addCommandHandler('hostme', async (channel, data, args) => {
       }
     } else {
       bot.say(channel, `${data.username} you're already being hosted!`)
+    }
+  }
+})
+
+bot.addCommandHandler('entries', async (channel, data, args) => {
+  if (channel == mainChannel) {
+    bot.say(channel, `There are ${(new Set(hostTickets.map(ticket => ticket.host))).size} participants in the raffle with a total of ${hostTickets.length} tickets!`)
+  }
+})
+
+bot.addCommandHandler('list', async (channel, data, args) => {
+  if (channel == mainChannel) {
+    bot.say(channel, `Raffle participants:\n${(new Array(...(new Set(hostTickets.map(ticket => ticket.host))))).join(', ')}`)
+  }
+})
+
+bot.addCommandHandler('tickets', async (channel, data, args) => {
+  if (channel == mainChannel) {
+    if (debug) data.username = args[0]
+    let tickets = hostTickets.filter(ticket => ticket.host == data.username).map(ticket => ticket.num)
+    if (tickets.length > 1) {
+      bot.say(channel,`${data.username} you have ${tickets.length} tickets for this raffle with values of ${tickets.slice(0, tickets.length - 1).join(', ')} and ${tickets.slice(-1)[0]}!`)
+    } else if (tickets.length == 1) {
+      bot.say(channel,`${data.username} you have ${tickets.length} ticket for this raffle with a value of ${tickets[0]}!`)
+    } else {
+      bot.say(channel,`${data.username} you don't have any tickets for this raffle!`)
     }
   }
 })
