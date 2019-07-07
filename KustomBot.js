@@ -34,7 +34,10 @@ class KustomBot {
         username: this.account,
         password: this.token
       },
-      channels: conf.channels
+      channels: conf.channels,
+      connection: {
+        reconnect: true
+      }
     })
 
     this.messageHandlers = []
@@ -99,14 +102,6 @@ class KustomBot {
 
   removeCommandHandler(command) {
     if (this.commandHandlers[command]) delete this.commandHandlers[command]
-  }
-
-  config() {
-    return {
-      identity: this.identity,
-      channels: this.channels,
-      prefix: this.prefix
-    }
   }
 
   connect() {
