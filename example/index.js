@@ -18,12 +18,14 @@
 
 const fs = require('fs');
 const KustomBot = require('kustombot')
-const Helix = require('@sighmir/helix.js')
+const Helix = require('jshelix')
+const Kraken = require('jskraken')
 
 let conf = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 global.bot = new KustomBot(conf)
 global.helix = new Helix(bot.token)
+global.kraken = new Kraken(bot.token)
 
 require('./commands')
 

@@ -2,5 +2,9 @@
   "account": "account",
   "token": "token",
   "prefix": "!",
-  "channels": []
+  "channels": [
+    "account",
+    "channel1",
+    "channel2"
+  ]
 }

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@sighmir/helix.js": "^1.0.2",
+    "jshelix": "^1.0.2",
+    "jskraken": "^1.0.0",
     "kustombot": "^1.0.3"
   },
   "devDependencies": {},
