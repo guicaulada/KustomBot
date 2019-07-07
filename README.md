@@ -2,7 +2,7 @@
 A customizable bot for Twitch.  
 
 This is just a simple project I made for a friend.  
-Use https://twitchapps.com/tmi to get your authentication token. 
+Use https://twitchapps.com/tmi or https://twitchtokengenerator.com to get your authentication token. 
 
 This bot is very simple but you can program it to do anything you want!  
 The example folder provides a simple example for you to get started but you can do much more!  
