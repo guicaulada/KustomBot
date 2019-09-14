@@ -36,6 +36,7 @@ class KustomBot {
       },
       channels: conf.channels,
       connection: {
+        secure: true,
         reconnect: true
       }
     })
