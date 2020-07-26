@@ -1,24 +1,102 @@
 # KustomBot
-A customizable bot for Twitch.  
 
-This is just a simple project I made for a friend.  
-Use https://twitchapps.com/tmi or https://twitchtokengenerator.com to get your authentication token. 
+[npm-url]: https://npmjs.org/package/kustombot
+[npm-image]: https://img.shields.io/npm/v/kustombot.svg
+[pipeline-image]: https://github.com/Sighmir/KustomBot/workflows/CI/CD/badge.svg
+[pipeline-url]: https://github.com/Sighmir/KustomBot/actions?query=workflow%3ACI%2FCD
+[coverage-image]: https://codecov.io/gh/Sighmir/KustomBot/graph/badge.svg
+[coverage-url]: https://codecov.io/gh/Sighmir/KustomBot
+[quality-image]: https://sonarcloud.io/api/project_badges/measure?project=KustomBot&metric=alert_status
+[quality-url]: https://sonarcloud.io/dashboard?id=KustomBot
+[depstat-url]: https://david-dm.org/Sighmir/KustomBot
+[depstat-image]: https://david-dm.org/Sighmir/KustomBot/status.svg
+[devdepstat-url]: https://david-dm.org/Sighmir/KustomBot?type=dev
+[devdepstat-image]: https://david-dm.org/Sighmir/KustomBot/dev-status.svg
+
+[![NPM version][npm-image]][npm-url]
+[![Pipeline Status][pipeline-image]][pipeline-url]
+[![Coverage Status][coverage-image]][coverage-url]
+[![Sonarcloud Status][quality-image]][quality-url]
+[![Dependency Status][depstat-image]][depstat-url]
+[![Dev Dependency Status][devdepstat-image]][devdepstat-url]
+
+**KustomBot** is a simple wrapper around [tmi.js](https://github.com/tmijs/tmi.js) for Twitch.
+
+This is just a simple project I made for a friend.
 
 This bot is very simple but you can program it to do anything you want!  
-The example folder provides a simple example for you to get started but you can do much more!  
+The example folder provides a simple example for you to get started but you can do much more!
 
-I am releasing this project to the public hoping it will be helpful for beginners trying to learn JavaScript.  
+I am releasing this project to the public hoping it will be helpful for beginners trying to learn TypeScript.
 
 Check my friend's Twitch channel: [twitch.tv/gwardo420](https://www.twitch.tv/gwardo420)
 
-## Installation
+## Requirements
 
-Use `npm install kustombot`
+- A Twitch token, get yours here: https://twitchtokengenerator.com
+
+## Documentation
+
+### Getting Started
+
+If you are using Node.js, install KustomBot using npm:
+
+```bash
+$ npm install kustombot
+```
+
+You can now require and use kustombot like so:
+
+```ts
+import KustomBot from "kustombot";
+
+const TWITCH_CLIENT = process.env.TWITCH_CLIENT;
+const TWITCH_TOKEN = process.env.TWITCH_TOKEN;
+
+const kbot = KustomBot({
+  options: {
+    debug: true,
+    clientId: TWITCH_CLIENT,
+  },
+  connection: {
+    reconnect: true,
+    secure: true,
+  },
+  identity: {
+    username: "kustombot",
+    password: `oauth:${TWITCH_TOKEN}`,
+  },
+  channels: ["#kustombot"],
+});
+
+kbot.addMessageHandler((channel, data, msg, self) => {
+  console.log(channel, data, msg, self);
+});
+
+kbot.addConnectionHandler((addr, port) => {
+  console.log(`Connected to ${addr}:${port}`);
+});
+
+kbot.connect();
+```
+
+Check out [tmi.js](https://github.com/tmijs/tmi.js) and the [KustomBot Example](https://github.com/Sighmir/KustomBot/tree/master/example) for more information.
+
+### Browser
+
+You can also load this script on your browser like so:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/kustombot/dist/bundle.js"></script>
+```
+
+You can now use KustomBot normally on the page, like you would on Node.js.
 
 ## License
+
 ```
 KustomBot - A customizable bot for Twitch.
-Copyright (C) 2019  Sighmir
+Copyright (C) 2019  Guilherme Caulada (Sighmir)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

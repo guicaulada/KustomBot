@@ -1,0 +1,82 @@
+name: CI/CD
+
+on: push
+
+env:
+  NODE_VERSION: 12.x
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn test:codecov
+      - uses: actions/upload-artifact@v1
+        with:
+          name: coverage
+          path: coverage
+    env:
+      TWITCH_CLIENT: ${{ secrets.TWITCH_CLIENT }}
+      TWITCH_TOKEN: ${{ secrets.TWITCH_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  quality:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+      - uses: warchant/setup-sonar-scanner@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: coverage
+      - run: yarn install
+      - run: sonar-scanner -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=${{ secrets.SONAR_HOST }}
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: yarn install
+      - run: yarn build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: dist
+          path: dist
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v1
+        with:
+          name: dist
+      - run: |
+          LATEST=`npm view . version`
+          CURRENT=`cat package.json | jq -r .version`
+          if [ "$LATEST" != "$CURRENT" ]
+          then
+            yarn publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

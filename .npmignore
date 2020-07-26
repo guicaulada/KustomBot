@@ -1,1 +1,6 @@
-example/node_modules
+*
+!dist
+!dist/*
+!dist/**/*
+!LICENSE
+!README.md
