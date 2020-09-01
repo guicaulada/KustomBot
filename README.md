@@ -45,6 +45,12 @@ If you are using Node.js, install KustomBot using npm:
 $ npm install kustombot
 ```
 
+For TypeScript you must install the types for tmi.js as a development dependency:
+
+```bash
+$ npm install -D @types/tmi.js
+```
+
 You can now require and use kustombot like so:
 
 ```ts
