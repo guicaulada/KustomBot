@@ -51,6 +51,15 @@ For TypeScript you must install the types for tmi.js as a development dependency
 $ npm install -D @types/tmi.js
 ```
 
+And have `esModuleInterop` or `allowSyntheticDefaultImports` set to true on your `tsconfig.json`:
+
+```json
+"esModuleInterop": true,
+"allowSyntheticDefaultImports": true
+```
+
+You only need one of these 2, `allowSyntheticDefaultImports` should have less side effects but `esModuleInterop` is recommended and is set to true by default on `tsc --init`.
+
 You can now require and use kustombot like so:
 
 ```ts
