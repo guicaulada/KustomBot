@@ -1,6 +1,6 @@
 {
   "name": "kustombot",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A customizable bot for Twitch",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -69,17 +69,10 @@
     }
   },
   "lint-staged": {
-    "*.{ts,js}": [
-      "prettier --write",
-      "yarn lint --fix"
-    ]
+    "*.{ts,js}": ["prettier --write", "yarn lint --fix"]
   },
   "jest-junit": {
     "outputDirectory": "coverage"
   },
-  "keywords": [
-    "twitch",
-    "bot",
-    "twitchbot"
-  ]
+  "keywords": ["twitch", "bot", "twitchbot"]
 }
