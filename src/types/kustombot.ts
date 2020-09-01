@@ -1,4 +1,4 @@
-import tmi from "tmi.js";
+import * as tmi from "tmi.js";
 
 export interface map<T> {
   [key: string]: T;

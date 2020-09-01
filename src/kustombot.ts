@@ -1,4 +1,4 @@
-import tmi from "tmi.js";
+import * as tmi from "tmi.js";
 import * as kbot from "./types/kustombot";
 
 export default function KustomBot(options: tmi.Options): kbot.KustomBot {

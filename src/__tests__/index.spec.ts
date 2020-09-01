@@ -1,4 +1,4 @@
-import tmi from "tmi.js";
+import * as tmi from "tmi.js";
 import { Server } from "ws";
 import KustomBot from "../index";
 
